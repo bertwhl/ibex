@@ -87,8 +87,9 @@ module ibex_compressed_decoder (
           3'b000: begin
             // c.addi -> addi rd, rd, nzimm
             // c.nop
-            instr_o = {{6 {instr_i[12]}}, instr_i[12], instr_i[6:2],
-                       instr_i[11:7], 3'b0, instr_i[11:7], {OPCODE_OP_IMM}};
+            // instr_o = {{6 {instr_i[12]}}, instr_i[12], instr_i[6:2],
+            //            instr_i[11:7], 3'b0, instr_i[11:7], {OPCODE_OP_IMM}};
+            illegal_instr_o = 1'b1;
           end
 
           3'b001, 3'b101: begin
