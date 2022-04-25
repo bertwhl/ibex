@@ -95,6 +95,7 @@ ${PRJ_DIR}/rtl/ibex_pmp.sv
 ${PRJ_DIR}/rtl/ibex_core.sv
 ${PRJ_DIR}/rtl/ibex_top.sv
 ${PRJ_DIR}/rtl/ibex_top_tracing.sv
+${PRJ_DIR}/rtl/test_pseudo_compressed_decoder.sv
 
 // Core DV files
 ${PRJ_DIR}/vendor/google_riscv-dv/src/riscv_signature_pkg.sv

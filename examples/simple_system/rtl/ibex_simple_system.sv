@@ -51,6 +51,7 @@ module ibex_simple_system (
   parameter bit                 BranchPredictor          = 1'b0;
   parameter                     SRAMInitFile             = "";
   parameter bit                 XInterface               = 1'b1;
+  parameter bit                 AccValid                 = 1'b1;
 
   logic clk_sys = 1'b0, rst_sys_n;
 
@@ -184,6 +185,11 @@ module ibex_simple_system (
     assign instr_rdata_intg = '0;
   end
 
+  logic                         x_compressed_valid;
+  logic                         x_compressed_ready;
+  ibex_pkg::x_compressed_req_t  x_compressed_req;
+  ibex_pkg::x_compressed_resp_t x_compressed_resp;
+
   ibex_top_tracing #(
       .SecureIbex      ( SecureIbex      ),
       .ICacheScramble  ( ICacheScramble  ),
@@ -256,10 +262,19 @@ module ibex_simple_system (
       .alert_major_bus_o      (),
       .core_sleep_o           (),
 
-      .x_compressed_valid_o   (),
-      .x_compressed_ready_i   (1'b0),
-      .x_compressed_req_o     (),
-      .x_compressed_resp_i    ('0)
+      .x_compressed_valid_o   (x_compressed_valid),
+      .x_compressed_ready_i   (x_compressed_ready),
+      .x_compressed_req_o     (x_compressed_req),
+      .x_compressed_resp_i    (x_compressed_resp)
+    );
+
+  test_pseudo_compressed_decoder #(
+      .AccValid ( AccValid )
+    ) u_pseudo_acc (
+      .x_compressed_valid_i   (x_compressed_valid),
+      .x_compressed_ready_o   (x_compressed_ready),
+      .x_compressed_req_i     (x_compressed_req),
+      .x_compressed_resp_o    (x_compressed_resp)
     );
 
   // SRAM block for instruction and data storage

@@ -67,6 +67,11 @@ module core_ibex_tb_top;
   parameter bit ICacheScramble           = 1'b0;
   parameter bit XInterface               = 1'b1;
 
+  logic                         x_compressed_valid;
+  logic                         x_compressed_ready;
+  ibex_pkg::x_compressed_req_t  x_compressed_req;
+  ibex_pkg::x_compressed_resp_t x_compressed_resp;
+
   ibex_top_tracing #(
     .DmHaltAddr      (32'h`BOOT_ADDR + 'h0 ),
     .DmExceptionAddr (32'h`BOOT_ADDR + 'h4 ),
@@ -137,10 +142,17 @@ module core_ibex_tb_top;
     .alert_major_bus_o      (dut_if.alert_major_bus     ),
     .core_sleep_o           (dut_if.core_sleep          ),
 
-    .x_compressed_valid_o   (                           ),
-    .x_compressed_ready_i   (1'b0                       ),
-    .x_compressed_req_o     (                           ),
-    .x_compressed_resp_i    ('0                         )
+    .x_compressed_valid_o   (x_compressed_valid         ),
+    .x_compressed_ready_i   (x_compressed_ready         ),
+    .x_compressed_req_o     (x_compressed_req           ),
+    .x_compressed_resp_i    (x_compressed_resp          )
+  );
+
+  test_pseudo_compressed_decoder u_pseudo_acc (
+    .x_compressed_valid_i   (x_compressed_valid),
+    .x_compressed_ready_o   (x_compressed_ready),
+    .x_compressed_req_i     (x_compressed_req  ),
+    .x_compressed_resp_o    (x_compressed_resp )
   );
 
   // We should never see any alerts triggered in normal testing
