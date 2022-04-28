@@ -416,7 +416,10 @@ module ibex_decoder #(
         rf_we            = 1'b1;
 
         unique case (instr[14:12])
-          3'b000,
+          // 3'b000,
+          3'b000: begin
+            illegal_insn = 1'b1;
+          end
           3'b010,
           3'b011,
           3'b100,
