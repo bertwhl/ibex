@@ -357,46 +357,48 @@ module ibex_decoder #(
       ////////////////
 
       OPCODE_STORE: begin
-        rf_ren_a_o         = 1'b1;
-        rf_ren_b_o         = 1'b1;
-        data_req_o         = 1'b1;
-        data_we_o          = 1'b1;
+        illegal_insn = 1'b1;
+        // rf_ren_a_o         = 1'b1;
+        // rf_ren_b_o         = 1'b1;
+        // data_req_o         = 1'b1;
+        // data_we_o          = 1'b1;
 
-        if (instr[14]) begin
-          illegal_insn = 1'b1;
-        end
+        // if (instr[14]) begin
+        //   illegal_insn = 1'b1;
+        // end
 
-        // store size
-        unique case (instr[13:12])
-          2'b00:   data_type_o  = 2'b10; // sb
-          2'b01:   data_type_o  = 2'b01; // sh
-          2'b10:   data_type_o  = 2'b00; // sw
-          default: illegal_insn = 1'b1;
-        endcase
+        // // store size
+        // unique case (instr[13:12])
+        //   2'b00:   data_type_o  = 2'b10; // sb
+        //   2'b01:   data_type_o  = 2'b01; // sh
+        //   2'b10:   data_type_o  = 2'b00; // sw
+        //   default: illegal_insn = 1'b1;
+        // endcase
       end
 
       OPCODE_LOAD: begin
-        rf_ren_a_o          = 1'b1;
-        data_req_o          = 1'b1;
-        data_type_o         = 2'b00;
+        illegal_insn = 1'b1;
+        // rf_ren_a_o          = 1'b1;
+        // data_req_o          = 1'b1;
+        // data_type_o         = 2'b00;
 
-        // sign/zero extension
-        data_sign_extension_o = ~instr[14];
+        // // sign/zero extension
+        // data_sign_extension_o = ~instr[14];
 
-        // load size
-        unique case (instr[13:12])
-          2'b00: data_type_o = 2'b10; // lb(u)
-          2'b01: data_type_o = 2'b01; // lh(u)
-          2'b10: begin
-            data_type_o = 2'b00;      // lw
-            if (instr[14]) begin
-              illegal_insn = 1'b1;    // lwu does not exist
-            end
-          end
-          default: begin
-            illegal_insn = 1'b1;
-          end
-        endcase
+        // // load size
+        // unique case (instr[13:12])
+        //   2'b00: data_type_o = 2'b10; // lb(u)
+        //   2'b01: data_type_o = 2'b01; // lh(u)
+        //   2'b10: begin
+        //     data_type_o = 2'b00;      // lw
+        //     if (instr[14]) begin
+        //       illegal_insn = 1'b1;    // lwu does not exist
+        //     end
+        //   end
+        //   default: begin
+        //     illegal_insn = 1'b1;
+        //   end
+        // endcase
       end
 
       /////////
@@ -839,26 +841,26 @@ module ibex_decoder #(
       // Load/store //
       ////////////////
 
-      OPCODE_STORE: begin
-        alu_op_a_mux_sel_o = OP_A_REG_A;
-        alu_op_b_mux_sel_o = OP_B_REG_B;
-        alu_operator_o     = ALU_ADD;
+      // OPCODE_STORE: begin
+      //   alu_op_a_mux_sel_o = OP_A_REG_A;
+      //   alu_op_b_mux_sel_o = OP_B_REG_B;
+      //   alu_operator_o     = ALU_ADD;
 
-        if (!instr_alu[14]) begin
-          // offset from immediate
-          imm_b_mux_sel_o     = IMM_B_S;
-          alu_op_b_mux_sel_o  = OP_B_IMM;
-        end
-      end
+      //   if (!instr_alu[14]) begin
+      //     // offset from immediate
+      //     imm_b_mux_sel_o     = IMM_B_S;
+      //     alu_op_b_mux_sel_o  = OP_B_IMM;
+      //   end
+      // end
 
-      OPCODE_LOAD: begin
-        alu_op_a_mux_sel_o  = OP_A_REG_A;
+      // OPCODE_LOAD: begin
+      //   alu_op_a_mux_sel_o  = OP_A_REG_A;
 
-        // offset from immediate
-        alu_operator_o      = ALU_ADD;
-        alu_op_b_mux_sel_o  = OP_B_IMM;
-        imm_b_mux_sel_o     = IMM_B_I;
-      end
+      //   // offset from immediate
+      //   alu_operator_o      = ALU_ADD;
+      //   alu_op_b_mux_sel_o  = OP_B_IMM;
+      //   imm_b_mux_sel_o     = IMM_B_I;
+      // end
 
       /////////
       // ALU //
