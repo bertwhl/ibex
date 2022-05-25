@@ -68,6 +68,26 @@ module core_ibex_tb_top;
   parameter bit XInterface               = 1'b1;
   parameter bit MemInterface             = 1'b1;
 
+  logic                    x_issue_valid;
+  logic                    x_issue_ready;
+  ibex_pkg::x_issue_req_t  x_issue_req;
+  ibex_pkg::x_issue_resp_t x_issue_resp;
+
+  logic                    x_commit_valid;
+  ibex_pkg::x_commit_t     x_commit;
+
+  logic                    x_mem_valid;
+  logic                    x_mem_ready;
+  ibex_pkg::x_mem_req_t    x_mem_req;
+  ibex_pkg::x_mem_resp_t   x_mem_resp;
+
+  logic                    x_mem_result_valid;
+  ibex_pkg::x_mem_result_t x_mem_result;
+
+  logic                    x_result_valid;
+  logic                    x_result_ready;
+  ibex_pkg::x_result_t     x_result;
+
   ibex_top_tracing #(
     .DmHaltAddr      (32'h`BOOT_ADDR + 'h0 ),
     .DmExceptionAddr (32'h`BOOT_ADDR + 'h4 ),
@@ -143,21 +163,41 @@ module core_ibex_tb_top;
     .x_compressed_ready_i   (1'b0                       ),
     .x_compressed_req_o     (                           ),
     .x_compressed_resp_i    ('0                         ),
-    .x_issue_valid_o        (                           ),
-    .x_issue_ready_i        (1'b0                       ),
-    .x_issue_req_o          (                           ),
-    .x_issue_resp_i         ('0                         ),
-    .x_commit_valid_o       (                           ),
-    .x_commit_o             (                           ),
-    .x_mem_valid_i          (1'b0                       ),
-    .x_mem_ready_o          (                           ),
-    .x_mem_req_i            ('0                         ),
-    .x_mem_resp_o           (                           ),
-    .x_mem_result_valid_o   (                           ),
-    .x_mem_result_o         (                           ),
-    .x_result_valid_i       (1'b0                       ),
-    .x_result_ready_o       (                           ),
-    .x_result_i             ('0                         )
+    .x_issue_valid_o        (x_issue_valid              ),
+    .x_issue_ready_i        (x_issue_ready              ),
+    .x_issue_req_o          (x_issue_req                ),
+    .x_issue_resp_i         (x_issue_resp               ),
+    .x_commit_valid_o       (x_commit_valid             ),
+    .x_commit_o             (x_commit                   ),
+    .x_mem_valid_i          (x_mem_valid                ),
+    .x_mem_ready_o          (x_mem_ready                ),
+    .x_mem_req_i            (x_mem_req                  ),
+    .x_mem_resp_o           (x_mem_resp                 ),
+    .x_mem_result_valid_o   (x_mem_result_valid         ),
+    .x_mem_result_o         (x_mem_result               ),
+    .x_result_valid_i       (x_result_valid             ),
+    .x_result_ready_o       (x_result_ready             ),
+    .x_result_i             (x_result                   )
+  );
+
+  test_pseudo_accelerator u_pseudo_accelerator (
+    .clk_i               (clk),
+    .rst_ni              (rst_n),
+    .x_issue_valid_i     (x_issue_valid),
+    .x_issue_ready_o     (x_issue_ready),
+    .x_issue_req_i       (x_issue_req),
+    .x_issue_resp_o      (x_issue_resp),
+    .x_commit_valid_i    (x_commit_valid),
+    .x_commit_i          (x_commit),
+    .x_mem_valid_o       (x_mem_valid),
+    .x_mem_ready_i       (x_mem_ready),
+    .x_mem_req_o         (x_mem_req),
+    .x_mem_resp_i        (x_mem_resp),
+    .x_mem_result_valid_i(x_mem_result_valid),
+    .x_mem_result_i      (x_mem_result),
+    .x_result_valid_o    (x_result_valid),
+    .x_result_ready_i    (x_result_ready),
+    .x_result_o          (x_result)
   );
 
   // We should never see any alerts triggered in normal testing
